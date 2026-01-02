@@ -7,9 +7,6 @@ export default function CartPage() {
   const { cart, removeFromCart, totalPrice, clearCart } = useCart();
   const navigate = useNavigate();
 
-  // State để hiện/ẩn form thanh toán
-  const [showCheckout, setShowCheckout] = useState(false);
-
   // State lưu thông tin khách hàng nhập
   const [formData, setFormData] = useState({
     name: "",

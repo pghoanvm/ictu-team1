@@ -2,13 +2,14 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 // Kiểu dữ liệu Đơn hàng
+
 interface Order {
   id: string;
   customerName: string;
   phone: string;
   address: string;
   totalPrice: number;
-  status: string;
+  status: string; // eslint-disable-next-line @typescript-eslint/no-explicit-any
   items: any[];
 }
 

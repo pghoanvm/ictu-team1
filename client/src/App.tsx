@@ -5,10 +5,14 @@ import LoginPage from "./pages/LoginPage";
 import CartPage from "./pages/CartPage";
 import ChatBot from "./components/ChatBot";
 import AdminPage from "./pages/AdminPage";
+import RegisterPage from "./pages/RegisterPage";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import { AuthProvider, useAuth } from "./context/AuthContext";
 import { CartProvider, useCart } from "./context/CartContext"; // <--- Import mới
 
 // Tạo một component con cho Menu để hiển thị số lượng giỏ hàng
 function Navbar() {
+  const { user, logout } = useAuth();
   const { cart } = useCart();
   return (
     <nav className="bg-gray-800 p-4 text-white flex justify-between items-center sticky top-0 z-40">
@@ -31,6 +35,23 @@ function Navbar() {
         </Link>
         <Link to="/login" className="hover:text-yellow-400">
           Đăng nhập
+          {user ? (
+            <div className="flex items-center gap-2">
+              <span className="text-yellow-400 font-bold">
+                Xin chào, {user.username}
+              </span>
+              <button
+                onClick={logout}
+                className="text-xs bg-red-600 px-2 py-1 rounded"
+              >
+                Thoát
+              </button>
+            </div>
+          ) : (
+            <Link to="/login" className="...">
+              Đăng nhập
+            </Link>
+          )}
         </Link>
       </div>
     </nav>
@@ -39,23 +60,27 @@ function Navbar() {
 
 function App() {
   return (
-    <CartProvider>
-      {" "}
-      {/* Bao bọc toàn bộ App */}
-      <BrowserRouter>
-        <Navbar /> {/* Menu đã tách ra để dùng được hook useCart */}
-        <div className="container mx-auto mt-5 p-4">
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/shop" element={<ShopPage />} />
-            <Route path="/cart" element={<CartPage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/admin" element={<AdminPage />} />
-          </Routes>
-        </div>
-        <ChatBot />
-      </BrowserRouter>
-    </CartProvider>
+    <AuthProvider>
+      <CartProvider>
+        {" "}
+        {/* Bao bọc toàn bộ App */}
+        <BrowserRouter>
+          <Navbar /> {/* Menu đã tách ra để dùng được hook useCart */}
+          <div className="container mx-auto mt-5 p-4">
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/shop" element={<ShopPage />} />
+              <Route path="/cart" element={<CartPage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/admin" element={<AdminPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+              <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            </Routes>
+          </div>
+          <ChatBot />
+        </BrowserRouter>
+      </CartProvider>
+    </AuthProvider>
   );
 }
 
