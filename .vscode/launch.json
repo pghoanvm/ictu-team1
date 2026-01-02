@@ -1,0 +1,21 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "ServerApplication",
+            "request": "launch",
+            "mainClass": "com.clothingstore.server.ServerApplication",
+            "projectName": ""
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-ShopaApplication<shopa>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.ictu.shopa.ShopaApplication",
+            "projectName": "shopa",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
