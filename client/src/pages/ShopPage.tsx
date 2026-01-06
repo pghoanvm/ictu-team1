@@ -10,7 +10,7 @@ export default function ShopPage() {
   useEffect(() => {
     // ... (Giữ nguyên phần gọi API cũ) ...
     axios
-      .get("http://localhost:8080/api/products")
+      .get("https://webvtile.onrender.com/api/products")
       .then((res) => setProducts(res.data));
   }, []);
 
@@ -37,7 +37,6 @@ export default function ShopPage() {
                   {product.price.toLocaleString("vi-VN")} đ
                 </span>
 
-                {/* SỬA NÚT BẤM TẠI ĐÂY */}
                 <button
                   onClick={() => addToCart(product)}
                   className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 active:scale-95 transition"

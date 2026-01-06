@@ -20,7 +20,7 @@ export default function ChatBot() {
 
     try {
       // 2. Gọi API Backend
-      const res = await axios.post("http://localhost:8080/api/chat", {
+      const res = await axios.post("https://webvtile.onrender.com/api/chat", {
         message: input,
       });
 

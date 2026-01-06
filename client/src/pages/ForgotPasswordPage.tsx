@@ -7,9 +7,12 @@ export default function ForgotPasswordPage() {
 
   const handleReset = async () => {
     try {
-      await axios.post("http://localhost:8080/api/auth/forgot-password", {
-        email,
-      });
+      await axios.post(
+        "https://webvtile.onrender.com/api/auth/forgot-password",
+        {
+          email,
+        }
+      );
       alert("Mật khẩu mới đã được gửi! (Hãy nhờ Admin xem Server Console)");
     } catch (err) {
       console.error(err);

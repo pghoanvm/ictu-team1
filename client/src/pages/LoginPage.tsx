@@ -11,10 +11,13 @@ export default function LoginPage() {
 
   const handleLogin = async () => {
     try {
-      const res = await axios.post("http://localhost:8080/api/auth/login", {
-        username,
-        password,
-      });
+      const res = await axios.post(
+        "https://webvtile.onrender.com/api/auth/login",
+        {
+          username,
+          password,
+        }
+      );
       login(res.data); // Lưu user vào context
       alert("Đăng nhập thành công!");
 

@@ -8,7 +8,7 @@ export default function RegisterPage() {
 
   const handleRegister = async () => {
     try {
-      await axios.post("http://localhost:8080/api/auth/register", form);
+      await axios.post("https://webvtile.onrender.com/api/auth/register", form);
       alert("Đăng ký thành công! Hãy đăng nhập.");
       navigate("/login");
     } catch (err) {

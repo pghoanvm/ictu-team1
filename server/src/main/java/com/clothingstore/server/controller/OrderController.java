@@ -8,7 +8,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/orders")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "*")
 public class OrderController {
 
     @Autowired
@@ -24,6 +24,11 @@ public class OrderController {
     @GetMapping
     public List<Order> getAllOrders() {
         return orderRepository.findAll();
+    }
+
+    @GetMapping("/my-orders/{username}")
+    public List<Order> getMyOrders(@PathVariable String username) {
+        return orderRepository.findByUsername(username);
     }
 
     @PutMapping("/{id}")

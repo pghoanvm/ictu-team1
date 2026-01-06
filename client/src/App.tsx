@@ -6,9 +6,12 @@ import CartPage from "./pages/CartPage";
 import ChatBot from "./components/ChatBot";
 import AdminPage from "./pages/AdminPage";
 import RegisterPage from "./pages/RegisterPage";
+import MyOrdersPage from "./pages/MyOrdersPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import ProductDetailPage from "./pages/ProductDetailPage";
+import EditProductPage from "./pages/EditProductPage";
 import { AuthProvider, useAuth } from "./context/AuthContext";
-import { CartProvider, useCart } from "./context/CartContext"; // <--- Import mới
+import { CartProvider, useCart } from "./context/CartContext";
 
 // Tạo một component con cho Menu để hiển thị số lượng giỏ hàng
 function Navbar() {
@@ -17,6 +20,19 @@ function Navbar() {
   return (
     <nav className="bg-gray-800 p-4 text-white flex justify-between items-center sticky top-0 z-40">
       <div className="flex gap-4 font-bold">
+        {user && (
+          <Link
+            to="/my-orders"
+            className="mr-4 font-bold text-blue-600 hover:text-blue-800"
+          >
+            📦 Đơn hàng của tôi
+          </Link>
+        )}
+        {user?.role === "ADMIN" && (
+          <Link to="/admin" className="font-bold text-red-500">
+            Quản trị viên
+          </Link>
+        )}
         <Link to="/" className="hover:text-yellow-400">
           Trang chủ
         </Link>
@@ -34,7 +50,6 @@ function Navbar() {
           )}
         </Link>
         <Link to="/login" className="hover:text-yellow-400">
-          Đăng nhập
           {user ? (
             <div className="flex items-center gap-2">
               <span className="text-yellow-400 font-bold">
@@ -75,6 +90,9 @@ function App() {
               <Route path="/admin" element={<AdminPage />} />
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+              <Route path="/my-orders" element={<MyOrdersPage />} />
+              <Route path="/product/:id" element={<ProductDetailPage />} />
+              <Route path="/admin/edit/:id" element={<EditProductPage />} />
             </Routes>
           </div>
           <ChatBot />

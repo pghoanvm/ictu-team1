@@ -16,6 +16,7 @@ public class Order {
     private Double totalPrice; // Tổng tiền
     private String status; // Trạng thái (Mới, Đang giao...)
 
+    private String username;
     // Lưu danh sách món hàng (lưu đơn giản dưới dạng List Map)
     private List<Map<String, Object>> items;
 
@@ -79,5 +80,13 @@ public class Order {
 
     public void setItems(List<Map<String, Object>> items) {
         this.items = items;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }
