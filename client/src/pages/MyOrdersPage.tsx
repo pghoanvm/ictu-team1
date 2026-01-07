@@ -21,30 +21,35 @@ export default function MyOrdersPage() {
     return <div className="p-10">Bạn cần đăng nhập để xem đơn hàng!</div>;
 
   return (
-    <div className="p-8 max-w-4xl mx-auto">
-      <h2 className="text-2xl font-bold mb-6">📦 Đơn hàng của tôi</h2>
+    <div className="container mx-auto p-4">
+      <div className="p-8 max-w-4xl mx-auto">
+        <h2 className="text-2xl font-bold mb-6">📦 Đơn hàng của tôi</h2>
 
-      {orders.length === 0 ? (
-        <p>Bạn chưa mua đơn hàng nào.</p>
-      ) : (
-        <div className="space-y-4">
-          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-          {orders.map((order: any) => (
-            <div key={order.id} className="border p-4 rounded shadow bg-white">
-              <div className="flex justify-between font-bold mb-2">
-                <span>Mã đơn: {order.id.substring(0, 8)}...</span>
-                <span className="text-green-600">
-                  {order.status || "Đang xử lý"}
-                </span>
+        {orders.length === 0 ? (
+          <p>Bạn chưa mua đơn hàng nào.</p>
+        ) : (
+          <div className="space-y-4">
+            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+            {orders.map((order: any) => (
+              <div
+                key={order.id}
+                className="border p-4 rounded shadow bg-white"
+              >
+                <div className="flex justify-between font-bold mb-2">
+                  <span>Mã đơn: {order.id.substring(0, 8)}...</span>
+                  <span className="text-green-600">
+                    {order.status || "Đang xử lý"}
+                  </span>
+                </div>
+                <p>Tổng tiền: {Number(order.totalPrice).toLocaleString()} đ</p>
+                <p className="text-sm text-gray-500">
+                  Ngày đặt: {new Date(order.createdAt).toLocaleDateString()}
+                </p>
               </div>
-              <p>Tổng tiền: {Number(order.totalPrice).toLocaleString()} đ</p>
-              <p className="text-sm text-gray-500">
-                Ngày đặt: {new Date(order.createdAt).toLocaleDateString()}
-              </p>
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

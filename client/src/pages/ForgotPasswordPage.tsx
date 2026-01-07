@@ -21,29 +21,31 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-20 p-6 border rounded shadow-lg bg-white">
-      <h2 className="text-2xl font-bold mb-4 text-center">Quên Mật Khẩu</h2>
-      <p className="text-sm text-gray-500 mb-4 text-center">
-        Nhập email bạn đã đăng ký để nhận mật khẩu mới.
-      </p>
+    <div className="container mx-auto p-4">
+      <div className="max-w-md mx-auto mt-20 p-6 border rounded shadow-lg bg-white">
+        <h2 className="text-2xl font-bold mb-4 text-center">Quên Mật Khẩu</h2>
+        <p className="text-sm text-gray-500 mb-4 text-center">
+          Nhập email bạn đã đăng ký để nhận mật khẩu mới.
+        </p>
 
-      <input
-        className="w-full border p-2 mb-4 rounded"
-        placeholder="Nhập email của bạn"
-        onChange={(e) => setEmail(e.target.value)}
-      />
+        <input
+          className="w-full border p-2 mb-4 rounded"
+          placeholder="Nhập email của bạn"
+          onChange={(e) => setEmail(e.target.value)}
+        />
 
-      <button
-        onClick={handleReset}
-        className="w-full bg-orange-500 text-white py-2 rounded font-bold mb-4"
-      >
-        Lấy lại mật khẩu
-      </button>
+        <button
+          onClick={handleReset}
+          className="w-full bg-orange-500 text-white py-2 rounded font-bold mb-4"
+        >
+          Lấy lại mật khẩu
+        </button>
 
-      <div className="text-center">
-        <Link to="/login" className="text-blue-500 text-sm">
-          Quay lại đăng nhập
-        </Link>
+        <div className="text-center">
+          <Link to="/login" className="text-blue-500 text-sm">
+            Quay lại đăng nhập
+          </Link>
+        </div>
       </div>
     </div>
   );

@@ -31,30 +31,32 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-20 p-6 border rounded shadow-lg bg-white">
-      <h2 className="text-2xl font-bold mb-6 text-center">Đăng Nhập</h2>
-      <input
-        className="w-full border p-2 mb-4 rounded"
-        placeholder="Tài khoản"
-        onChange={(e) => setUsername(e.target.value)}
-      />
-      <input
-        className="w-full border p-2 mb-4 rounded"
-        type="password"
-        placeholder="Mật khẩu"
-        onChange={(e) => setPassword(e.target.value)}
-      />
+    <div className="container mx-auto p-4">
+      <div className="max-w-md mx-auto mt-20 p-6 border rounded shadow-lg bg-white">
+        <h2 className="text-2xl font-bold mb-6 text-center">Đăng Nhập</h2>
+        <input
+          className="w-full border p-2 mb-4 rounded"
+          placeholder="Tài khoản"
+          onChange={(e) => setUsername(e.target.value)}
+        />
+        <input
+          className="w-full border p-2 mb-4 rounded"
+          type="password"
+          placeholder="Mật khẩu"
+          onChange={(e) => setPassword(e.target.value)}
+        />
 
-      <button
-        onClick={handleLogin}
-        className="w-full bg-blue-600 text-white py-2 rounded font-bold mb-4"
-      >
-        Đăng Nhập
-      </button>
+        <button
+          onClick={handleLogin}
+          className="w-full bg-blue-600 text-white py-2 rounded font-bold mb-4"
+        >
+          Đăng Nhập
+        </button>
 
-      <div className="flex justify-between text-sm text-blue-500">
-        <Link to="/register">Đăng ký tài khoản</Link>
-        <Link to="/forgot-password">Quên mật khẩu?</Link>
+        <div className="flex justify-between text-sm text-blue-500">
+          <Link to="/register">Đăng ký tài khoản</Link>
+          <Link to="/forgot-password">Quên mật khẩu?</Link>
+        </div>
       </div>
     </div>
   );

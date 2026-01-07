@@ -34,42 +34,46 @@ export default function EditProductPage() {
   };
 
   return (
-    <div className="p-8 max-w-lg mx-auto">
-      <h2 className="text-2xl font-bold mb-4">✏️ Sửa sản phẩm</h2>
-      <form onSubmit={handleUpdate} className="space-y-4">
-        <div>
-          <label>Tên sản phẩm</label>
-          <input
-            className="border w-full p-2 rounded"
-            value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          />
-        </div>
-        <div>
-          <label>Giá tiền</label>
-          <input
-            type="number"
-            className="border w-full p-2 rounded"
-            value={formData.price}
-            onChange={(e) =>
-              setFormData({ ...formData, price: Number(e.target.value) })
-            }
-          />
-        </div>
-        <div>
-          <label>Ảnh (URL)</label>
-          <input
-            className="border w-full p-2 rounded"
-            value={formData.imageUrl}
-            onChange={(e) =>
-              setFormData({ ...formData, imageUrl: e.target.value })
-            }
-          />
-        </div>
-        <button className="bg-blue-600 text-white w-full py-2 rounded font-bold">
-          Lưu thay đổi
-        </button>
-      </form>
+    <div className="container mx-auto p-4">
+      <div className="p-8 max-w-lg mx-auto">
+        <h2 className="text-2xl font-bold mb-4">✏️ Sửa sản phẩm</h2>
+        <form onSubmit={handleUpdate} className="space-y-4">
+          <div>
+            <label>Tên sản phẩm</label>
+            <input
+              className="border w-full p-2 rounded"
+              value={formData.name}
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value })
+              }
+            />
+          </div>
+          <div>
+            <label>Giá tiền</label>
+            <input
+              type="number"
+              className="border w-full p-2 rounded"
+              value={formData.price}
+              onChange={(e) =>
+                setFormData({ ...formData, price: Number(e.target.value) })
+              }
+            />
+          </div>
+          <div>
+            <label>Ảnh (URL)</label>
+            <input
+              className="border w-full p-2 rounded"
+              value={formData.imageUrl}
+              onChange={(e) =>
+                setFormData({ ...formData, imageUrl: e.target.value })
+              }
+            />
+          </div>
+          <button className="bg-blue-600 text-white w-full py-2 rounded font-bold">
+            Lưu thay đổi
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
