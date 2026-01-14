@@ -84,7 +84,7 @@ export default function ChatBot() {
       return "Giá sản phẩm được niêm yết công khai trên web ạ. Bạn bấm vào sản phẩm để xem chi tiết nhé!";
     }
     if (lowerText.includes("ship") || lowerText.includes("vận chuyển")) {
-      return "Shop miễn phí vận chuyển cho đơn từ 500k. Phí ship thường là 30k ạ.";
+      return "Shop miễn phí vận chuyển cho đơn từ 500k.";
     }
     if (lowerText.includes("đổi trả") || lowerText.includes("bảo hành")) {
       return "Shop hỗ trợ đổi trả trong vòng 7 ngày nếu lỗi do nhà sản xuất hoặc không vừa size ạ.";

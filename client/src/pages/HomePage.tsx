@@ -70,7 +70,7 @@ export default function HomePage() {
             {
               name: "Phụ Kiện",
               image:
-                "https://www.elleman.vn/app/uploads/2015/04/24/phu-kien-nam-khuy-mang-set.jpg",
+                "https://cdn.hstatic.net/products/200000690725/al011_63e4d647752348dfb69f2538e4e13982_master.png",
             },
           ].map((cat, index) => (
             <div
@@ -118,8 +118,8 @@ export default function HomePage() {
       {/* 4. ẢNH BANNER PHỤ */}
       <div className="w-full mb-16 overflow-hidden">
         <img
-          src="https://theme.hstatic.net/1000333436/1001040510/14/banner_collection_1.jpg?v=680"
-          alt="Banner phụ"
+          //src="https://theme.hstatic.net/1000333436/1001040510/14/banner_collection_1.jpg?v=680"
+          //alt="Banner phụ"
           className="w-full object-cover hover:scale-105 transition duration-1000"
         />
       </div>
