@@ -1,4 +1,4 @@
-package com.clothingstore.server.entity;
+package com.clothingstore.server.auth.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -10,13 +10,13 @@ public class User {
     private String username;
     private String password; // Lưu ý: Đồ án thật nên mã hóa, ở đây để plain-text cho dễ test
     private String email;
-    private String role; // "ADMIN" hoặc "USER"
+    private Role role = Role.USER;  // "ADMIN" hoặc "USER"
 
     // Constructor, Getter, Setter
     public User() {
     }
 
-    public User(String username, String password, String email, String role) {
+    public User(String username, String password, String email, Role role) {
         this.username = username;
         this.password = password;
         this.email = email;
@@ -56,11 +56,11 @@ public class User {
         this.email = email;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 }
