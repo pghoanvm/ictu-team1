@@ -68,16 +68,18 @@ export default function Navbar() {
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-red-600 transition-all group-hover:w-full"></span>
             </Link>
             <Link
-              to="#"
-              className="hover:text-red-600 transition-colors duration-300"
+              to="/collection"
+              className="hover:text-red-600 transition-colors duration-300 relative group"
             >
               Bộ sưu tập
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-red-600 transition-all group-hover:w-full"></span>
             </Link>
             <Link
-              to="#"
-              className="hover:text-red-600 transition-colors duration-300"
+              to="/about"
+              className="hover:text-red-600 transition-colors duration-300 relative group"
             >
               Về chúng tôi
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-red-600 transition-all group-hover:w-full"></span>
             </Link>
           </div>
 

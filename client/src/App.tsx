@@ -10,6 +10,8 @@ import MyOrdersPage from "./pages/MyOrdersPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ProductDetailPage from "./pages/ProductDetailPage";
 import EditProductPage from "./pages/EditProductPage";
+import CollectionPage from "./pages/CollectionPage";
+import AboutPage from "./pages/AboutPage";
 import { AuthProvider } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
 import Footer from "./components/Footer";
@@ -100,6 +102,24 @@ function App() {
                 element={
                   <div className="container mx-auto p-4">
                     <ProductDetailPage />
+                  </div>
+                }
+              />
+
+              <Route
+                path="/collection"
+                element={
+                  <div className="container mx-auto p-4">
+                    <CollectionPage />
+                  </div>
+                }
+              />
+
+              <Route
+                path="/about"
+                element={
+                  <div className="container mx-auto p-4">
+                    <AboutPage />
                   </div>
                 }
               />
