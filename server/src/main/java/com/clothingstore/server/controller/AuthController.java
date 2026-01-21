@@ -39,7 +39,7 @@ public class AuthController {
         newUser.setPassword(encodedPassword);
 
         userRepository.save(newUser);
-        return ResponseEntity.ok("Đăng ký thành công với mật khẩu đã mã hóa!");
+        return ResponseEntity.ok("Đăng ký thành công !");
     }
 
     // 2. Chức năng Đăng nhập (Kiểm tra mật khẩu mã hóa)
@@ -65,25 +65,25 @@ public class AuthController {
         return ResponseEntity.ok(user);
     }
 
-    // 3. Chức năng Quên mật khẩu (Mã hóa mật khẩu mới)
+    // 3. Chức năng Quên mật khẩu (Trả về pass mới luôn)
     @PostMapping("/forgot-password")
     public ResponseEntity<?> forgotPassword(@RequestBody Map<String, String> data) {
         String email = data.get("email");
         Optional<User> userOpt = userRepository.findByEmail(email);
 
         if (userOpt.isEmpty()) {
-            return ResponseEntity.badRequest().body("❌ Email không tồn tại!");
+            return ResponseEntity.badRequest().body("❌ Email không tồn tại trong hệ thống!");
         }
 
         User user = userOpt.get();
+        // Tạo mật khẩu ngẫu nhiên 6 ký tự
         String newPassword = UUID.randomUUID().toString().substring(0, 6);
 
-        // --- MÃ HÓA MẬT KHẨU MỚI ---
+        // Mã hóa để lưu vào Database
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
 
-        System.out.println("MẬT KHẨU MỚI (CHƯA MÃ HÓA) LÀ: " + newPassword);
-
-        return ResponseEntity.ok("Mật khẩu mới đã được gửi!");
+        // 👇 QUAN TRỌNG: Trả về mật khẩu mới cho người dùng xem
+        return ResponseEntity.ok("Mật khẩu mới của bạn là: " + newPassword);
     }
 }

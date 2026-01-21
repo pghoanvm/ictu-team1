@@ -8,7 +8,7 @@ public class User {
     @Id
     private String id;
     private String username;
-    private String password; // Lưu ý: Đồ án thật nên mã hóa, ở đây để plain-text cho dễ test
+    private String password;
     private String email;
     private String role; // "ADMIN" hoặc "USER"
 

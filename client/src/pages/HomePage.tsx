@@ -37,7 +37,7 @@ export default function HomePage() {
             BST THU ĐÔNG 2025
           </h1>
           <Link
-            to="/shop"
+            to="/collection"
             className="bg-white text-black px-8 py-3 uppercase font-bold text-sm hover:bg-black hover:text-white transition"
           >
             Xem ngay
