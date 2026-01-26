@@ -45,8 +45,7 @@ export default function HomePage() {
         </div>
       </div>
 
-
-      {/* 3. DANH SÁCH SẢN PHẨM MỚI */}
+      {/* 2. DANH SÁCH SẢN PHẨM MỚI */}
       <div className="max-w-7xl mx-auto px-4 mb-12">
         <div className="flex justify-between items-end mb-6 border-b pb-4">
           <h2 className="text-2xl font-bold uppercase tracking-wide">

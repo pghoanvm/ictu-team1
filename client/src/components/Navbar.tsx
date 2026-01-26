@@ -4,11 +4,11 @@ import { useCart } from "../context/CartContext";
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
-
 export default function Navbar() {
   const { user, logout } = useAuth(); // Lấy thông tin user
   const { cart } = useCart(); // Lấy giỏ hàng để hiện số lượng
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   const [showSearch, setShowSearch] = useState(false);
   const [keyword, setKeyword] = useState("");
   const navigate = useNavigate();
@@ -91,51 +91,50 @@ export default function Navbar() {
           {/* --- ICON BÊN PHẢI (Tìm kiếm, User, Giỏ hàng) --- */}
           <div className="flex items-center space-x-4 md:space-x-6">
             {/* 1. Icon Tìm kiếm */}
-           <div className="relative flex items-center">
-             <input
-             ref={inputRef}
-            type="text"
-            placeholder="Tìm sản phẩm theo tên..."
-            value={keyword}
-            onChange={(e) => setKeyword(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && keyword.trim()) {
-               navigate(
-                  `/shop?search=${encodeURIComponent(keyword)}&page=1`
-                );
-                setShowSearch(false);
-              }
-            }}
-            className={`mr-2 px-3 py-1.5 border rounded-full text-sm transition-all duration-300
+            <div className="relative flex items-center">
+              <input
+                ref={inputRef}
+                type="text"
+                placeholder="Tìm sản phẩm theo tên..."
+                value={keyword}
+                onChange={(e) => setKeyword(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && keyword.trim()) {
+                    navigate(
+                      `/shop?search=${encodeURIComponent(keyword)}&page=1`,
+                    );
+                    setShowSearch(false);
+                  }
+                }}
+                className={`mr-2 px-3 py-1.5 border rounded-full text-sm transition-all duration-300
               focus:outline-none focus:ring-2 focus:ring-black
               ${showSearch ? "w-56 opacity-100" : "w-0 opacity-0 pointer-events-none"}
             `}
-          />
-          {/* ICON SEARCH */}
-          <button
-            onClick={() => {
-              setShowSearch((prev) => !prev);
-              setTimeout(() => inputRef.current?.focus(), 200);
-            }}
-            className="text-gray-600 hover:text-black transition z-10"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
               />
-            </svg>
-          </button>
-        </div>
-
+              {/* ICON SEARCH */}
+              <button
+                onClick={() => {
+                  setShowSearch((prev) => !prev);
+                  setTimeout(() => inputRef.current?.focus(), 200);
+                }}
+                className="text-gray-600 hover:text-black transition z-10"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
+                </svg>
+              </button>
+            </div>
 
             {/* 2. Icon User (Có Dropdown) */}
             <div className="relative group z-10">
