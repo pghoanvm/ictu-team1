@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
+import type { CredentialResponse } from "@react-oauth/google";
 import axios, { AxiosError } from "axios";
 import { useAuth } from "../context/AuthContext";
 
@@ -29,7 +31,17 @@ export default function LoginPage() {
       alert("Lỗi: " + (error.response?.data?.message || "Sai thông tin!"));
     }
   };
-
+const handleGoogleSuccess = async (credentialResponse: CredentialResponse) => { 
+  try {
+     const res = await axios.post("http://localhost:8080/api/auth/google", { 
+      token: credentialResponse.credential }); 
+      login(res.data); // lưu JWT và role 
+      alert("Đăng nhập Google thành công!"); 
+       navigate("/");
+    } catch (err) {
+       alert("Google login thất bại!"); 
+      }
+     };
   return (
     <div className="container mx-auto p-4">
       <div className="max-w-md mx-auto mt-20 p-6 border rounded shadow-lg bg-white">
@@ -52,12 +64,22 @@ export default function LoginPage() {
         >
           Đăng Nhập
         </button>
+        
+       
+        <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+          <GoogleLogin
+            onSuccess={handleGoogleSuccess}
+            onError={() => console.log("Đăng nhập Google thất bại")}
+          />
+        </GoogleOAuthProvider>
+
 
         <div className="flex justify-between text-sm text-blue-500">
           <Link to="/register">Đăng ký tài khoản</Link>
           <Link to="/forgot-password">Quên mật khẩu?</Link>
         </div>
       </div>
+      
     </div>
   );
 }

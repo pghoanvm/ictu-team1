@@ -3,14 +3,20 @@ package com.clothingstore.server.controller;
 // --- CÁC DÒNG IMPORT CẦN THIẾT (Sửa lỗi gạch đỏ) ---
 import com.clothingstore.server.entity.User;
 import com.clothingstore.server.repository.UserRepository;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.gson.GsonFactory;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -22,6 +28,8 @@ public class AuthController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Value("${google.client.id}")
+    private String googleClientId;
 
     // 1. Chức năng Đăng ký (Có mã hóa)
     @PostMapping("/register")
@@ -86,4 +94,53 @@ public class AuthController {
         // 👇 QUAN TRỌNG: Trả về mật khẩu mới cho người dùng xem
         return ResponseEntity.ok("Mật khẩu mới của bạn là: " + newPassword);
     }
+
+    @PostMapping("/google")
+    public ResponseEntity<?> googleLogin(@RequestBody Map<String, String> data) {
+        try {
+            String token = data.get("token");
+            if (token == null) {
+                return ResponseEntity.badRequest().body("Token missing");
+            }
+
+            GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
+                    new NetHttpTransport(),
+                    GsonFactory.getDefaultInstance()
+            )
+                    .setAudience(List.of(
+                            googleClientId
+                    ))
+                    .build();
+
+            GoogleIdToken idToken = verifier.verify(token);
+            if (idToken == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body("Invalid Google token");
+            }
+
+            GoogleIdToken.Payload payload = idToken.getPayload();
+            String email = payload.getEmail();
+            String name = payload.get("name") != null
+                    ? payload.get("name").toString()
+                    : email.split("@")[0];
+
+            User user = userRepository.findByEmail(email).orElseGet(() -> {
+                User u = new User();
+                u.setUsername(name);
+                u.setEmail(email);
+                u.setPassword("");
+                u.setRole("USER");
+                return userRepository.save(u);
+            });
+
+            return ResponseEntity.ok(user);
+
+        } catch (Exception e) {
+            e.printStackTrace(); // 👈 BẮT BUỘC để xem log
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Google login failed");
+        }
+    }
+
+
 }
