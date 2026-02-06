@@ -1,28 +1,22 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
+import axios from "axios";
 import { useCart } from "../context/CartContext";
-
-interface Product {
-  id: string;
-  name: string;
-  price: number;
-  description: string;
-  imageUrl: string;
-  category: string;
-}
+import type { Product } from "../types/Product";
 
 export default function ProductDetailPage() {
-  const { id } = useParams(); // Lấy ID từ đường dẫn (ví dụ: /product/123)
+  const { id } = useParams();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
+  const [quantity, setQuantity] = useState(1);
   const { addToCart } = useCart();
 
   useEffect(() => {
-    // Gọi API lấy chi tiết 1 sản phẩm theo ID
-    fetch(`https://webvtile.onrender.com/api/products/${id}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setProduct(data);
+    // Gọi API lấy chi tiết sản phẩm theo ID
+    axios
+      .get(`https://webvtile.onrender.com/api/products/${id}`)
+      .then((res) => {
+        setProduct(res.data);
         setLoading(false);
       })
       .catch((err) => {
@@ -31,61 +25,100 @@ export default function ProductDetailPage() {
       });
   }, [id]);
 
-  if (loading)
-    return <div className="p-10 text-center">Đang tải sản phẩm...</div>;
+  const handleAddToCart = () => {
+    if (product) {
+      // Thêm sản phẩm với số lượng đã chọn (Loop add nhiều lần hoặc sửa hàm addToCart để nhận quantity)
+      // Ở đây mình gọi hàm addToCart cơ bản, bạn có thể nâng cấp Context sau
+      for (let i = 0; i < quantity; i++) {
+        addToCart(product);
+      }
+      alert(`Đã thêm ${quantity} sản phẩm vào giỏ!`);
+    }
+  };
+
+  if (loading) return <div className="text-center py-20">Đang tải...</div>;
   if (!product)
-    return (
-      <div className="p-10 text-center text-red-500">
-        Không tìm thấy sản phẩm!
-      </div>
-    );
+    return <div className="text-center py-20">Không tìm thấy sản phẩm.</div>;
 
   return (
-    <div className="container mx-auto p-4">
-      <div className="p-8 max-w-6xl mx-auto">
-        {/* Nút quay lại */}
-        <Link
-          to="/"
-          className="text-blue-500 hover:underline mb-4 inline-block"
-        >
-          &larr; Quay lại trang chủ
-        </Link>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 font-sans">
+      {/* Breadcrumb */}
+      <div className="text-sm text-gray-500 mb-8">
+        <Link to="/" className="hover:text-black">
+          Trang chủ
+        </Link>{" "}
+        /
+        <Link to="/shop" className="hover:text-black ml-1">
+          Sản phẩm
+        </Link>{" "}
+        /<span className="text-black font-bold ml-1">{product.name}</span>
+      </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mt-4">
-          {/* Cột Trái: Ảnh sản phẩm */}
-          <div className="border rounded-lg overflow-hidden shadow-lg">
-            <img
-              src={product.imageUrl}
-              alt={product.name}
-              className="w-full h-96 object-cover"
-            />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+        {/* Cột Trái: Ảnh */}
+        <div className="bg-gray-100 aspect-[3/4] rounded-lg overflow-hidden">
+          <img
+            src={product.imageUrl}
+            alt={product.name}
+            className="w-full h-full object-cover hover:scale-105 transition duration-500"
+          />
+        </div>
+
+        {/* Cột Phải: Thông tin */}
+        <div>
+          <h1 className="text-3xl font-black uppercase tracking-wide mb-2">
+            {product.name}
+          </h1>
+          <p className="text-lg text-gray-500 mb-6">{product.category}</p>
+
+          <div className="text-3xl text-red-600 font-black mb-8">
+            {product.price.toLocaleString("vi-VN")} đ
           </div>
 
-          {/* Cột Phải: Thông tin chi tiết */}
-          <div>
-            <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
-            <p className="text-gray-500 mb-4">Danh mục: {product.category}</p>
+          <p className="text-gray-600 leading-relaxed mb-8">
+            {product.description || "Chưa có mô tả cho sản phẩm này."}
+          </p>
 
-            <div className="text-3xl text-red-600 font-bold mb-6">
-              {product.price.toLocaleString()} đ
-            </div>
-
-            <p className="text-gray-700 leading-relaxed mb-8">
-              {product.description || "Chưa có mô tả cho sản phẩm này."}
-            </p>
-
-            {/* Các nút bấm */}
-            <div className="flex gap-4">
+          {/* Chọn số lượng */}
+          <div className="flex items-center mb-8">
+            <span className="font-bold mr-4 uppercase text-sm">Số lượng:</span>
+            <div className="flex items-center border border-gray-300">
               <button
-                className="bg-blue-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-blue-700 transition"
-                onClick={() => addToCart(product)}
+                onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                className="px-4 py-2 hover:bg-gray-100 font-bold"
               >
-                Thêm vào giỏ
+                -
               </button>
-              <button className="bg-gray-200 text-black px-8 py-3 rounded-lg font-bold hover:bg-gray-300 transition">
-                Mua ngay
+              <span className="px-4 py-2 font-bold min-w-[3rem] text-center">
+                {quantity}
+              </span>
+              <button
+                onClick={() => setQuantity((q) => q + 1)}
+                className="px-4 py-2 hover:bg-gray-100 font-bold"
+              >
+                +
               </button>
             </div>
+          </div>
+
+          {/* Nút hành động */}
+          <div className="flex gap-4">
+            <button
+              onClick={handleAddToCart}
+              className="flex-1 bg-black text-white py-4 font-bold uppercase tracking-widest hover:bg-gray-800 transition"
+            >
+              Thêm vào giỏ
+            </button>
+            <button className="w-14 flex items-center justify-center border border-gray-300 hover:bg-gray-100 transition">
+              ❤️
+            </button>
+          </div>
+
+          {/* Cam kết */}
+          <div className="mt-10 border-t pt-6 space-y-3 text-sm text-gray-500">
+            <p>✅ Miễn phí vận chuyển cho đơn hàng trên 500k</p>
+            <p>✅ Đổi trả miễn phí trong vòng 7 ngày</p>
+            <p>✅ Cam kết hàng chính hãng 100%</p>
           </div>
         </div>
       </div>

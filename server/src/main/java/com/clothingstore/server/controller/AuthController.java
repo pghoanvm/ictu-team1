@@ -105,11 +105,9 @@ public class AuthController {
 
             GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
                     new NetHttpTransport(),
-                    GsonFactory.getDefaultInstance()
-            )
+                    GsonFactory.getDefaultInstance())
                     .setAudience(List.of(
-                            googleClientId
-                    ))
+                            googleClientId))
                     .build();
 
             GoogleIdToken idToken = verifier.verify(token);
@@ -141,6 +139,5 @@ public class AuthController {
                     .body("Google login failed");
         }
     }
-
 
 }

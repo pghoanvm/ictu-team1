@@ -1,180 +1,218 @@
-import { useState } from "react";
 import { useCart } from "../context/CartContext";
 import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import axios from "axios";
-
-// 1. IMPORT CÁI NÀY ĐỂ LẤY THÔNG TIN USER
 import { useAuth } from "../context/AuthContext";
 
 export default function CartPage() {
-  const { cart, removeFromCart, totalPrice, clearCart } = useCart();
+  const { cart, removeFromCart, updateQuantity, clearCart } = useCart();
+  const { user } = useAuth();
   const navigate = useNavigate();
 
-  // 2. LẤY USER TỪ CONTEXT
-  const { user } = useAuth();
-
-  const [formData, setFormData] = useState({
-    name: "",
+  // State form thanh toán
+  const [customerInfo, setCustomerInfo] = useState({
+    customerName: user?.username || "",
     phone: "",
     address: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  const totalPrice = cart.reduce(
+    (total, item) => total + item.price * item.quantity,
+    0,
+  );
 
-  const handleOrder = async () => {
-    // 3. KIỂM TRA ĐĂNG NHẬP (Bắt buộc phải đăng nhập mới gán được đơn hàng)
+  const handleCheckout = async (e: React.FormEvent) => {
+    e.preventDefault();
     if (!user) {
-      alert("Bạn cần đăng nhập để thực hiện đặt hàng!");
-      navigate("/login"); // Chuyển hướng sang trang login (nếu bạn có)
+      alert("Vui lòng đăng nhập để đặt hàng!");
+      navigate("/login");
       return;
     }
 
-    if (!formData.name || !formData.phone || !formData.address) {
-      alert("Vui lòng điền đầy đủ thông tin nhận hàng!");
-      return;
-    }
+    if (cart.length === 0) return;
 
+    setIsSubmitting(true);
     try {
-      await axios.post("https://webvtile.onrender.com/api/orders", {
-        customerName: formData.name,
-        phone: formData.phone,
-        address: formData.address,
+      // Chuẩn bị dữ liệu gửi xuống Server
+      const orderData = {
+        customerName: customerInfo.customerName,
+        phone: customerInfo.phone,
+        address: customerInfo.address,
         totalPrice: totalPrice,
-        items: cart,
+        items: cart.map((item) => ({
+          productId: item.id,
+          productName: item.name,
+          quantity: item.quantity,
+          price: item.price,
+        })),
+      };
 
-        // 4. QUAN TRỌNG NHẤT: GỬI KÈM USERNAME
-        username: user.username,
-      });
+      // GỌI API ĐẶT HÀNG
+      await axios.post("https://webvtile.onrender.com/api/orders", orderData);
 
-      alert("🎉 Đặt hàng thành công! Shop sẽ sớm liên hệ bạn.");
-      clearCart();
-      navigate("/");
+      alert("✅ Đặt hàng thành công! Chúng tôi sẽ sớm liên hệ.");
+      clearCart(); // Xóa giỏ hàng
+      navigate("/my-orders"); // Chuyển sang trang đơn hàng của tôi
     } catch (error) {
-      alert("Lỗi đặt hàng. Vui lòng thử lại!");
       console.error(error);
+      alert("❌ Đặt hàng thất bại. Vui lòng thử lại!");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   if (cart.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh]">
-        <h2 className="text-2xl font-bold text-gray-600">
-          Giỏ hàng trống trơn! 😭
-        </h2>
-        <Link to="/" className="mt-4 text-blue-600 hover:underline">
-          ← Đi mua sắm ngay
+      <div className="min-h-[60vh] flex flex-col items-center justify-center font-sans">
+        <h2 className="text-2xl font-black uppercase mb-4">Giỏ hàng trống</h2>
+        <p className="text-gray-500 mb-8">Bạn chưa chọn sản phẩm nào.</p>
+        <Link
+          to="/shop"
+          className="bg-black text-white px-8 py-3 uppercase font-bold text-sm hover:bg-gray-800 transition"
+        >
+          Mua sắm ngay
         </Link>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto p-4">
-      <div className="max-w-6xl mx-auto py-8 grid grid-cols-1 md:grid-cols-2 gap-10">
-        {/* CỘT TRÁI: DANH SÁCH HÀNG */}
-        <div>
-          <h2 className="text-2xl font-bold mb-4">1. Giỏ hàng của bạn</h2>
-          <div className="space-y-4">
-            {cart.map((item) => (
-              <div
-                key={item.id}
-                className="flex gap-4 bg-white p-4 rounded border shadow-sm"
-              >
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 font-sans">
+      <h1 className="text-3xl font-black uppercase tracking-widest mb-10">
+        Giỏ hàng của bạn
+      </h1>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        {/* --- CỘT TRÁI: DANH SÁCH SẢN PHẨM --- */}
+        <div className="space-y-6">
+          {cart.map((item) => (
+            <div key={item.id} className="flex gap-4 border-b pb-6">
+              <div className="w-24 h-32 flex-shrink-0 bg-gray-100 overflow-hidden">
                 <img
                   src={item.imageUrl}
                   alt={item.name}
-                  className="w-20 h-20 object-cover rounded"
+                  className="w-full h-full object-cover"
                 />
-                <div className="flex-1">
-                  <h3 className="font-bold">{item.name}</h3>
-                  <p className="text-red-500">
-                    {item.price.toLocaleString("vi-VN")} đ
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    Số lượng: {item.quantity}
+              </div>
+              <div className="flex-1 flex flex-col justify-between">
+                <div>
+                  <h3 className="font-bold text-lg uppercase">{item.name}</h3>
+                  <p className="text-sm text-gray-500">{item.category}</p>
+                  <p className="mt-1 font-medium">
+                    {new Intl.NumberFormat("vi-VN", {
+                      style: "currency",
+                      currency: "VND",
+                    }).format(item.price)}
                   </p>
                 </div>
-                <button
-                  onClick={() => removeFromCart(item.id)}
-                  className="text-gray-400 hover:text-red-500"
-                >
-                  Xóa
-                </button>
+                <div className="flex justify-between items-center mt-4">
+                  <div className="flex items-center border border-gray-300">
+                    <button
+                      onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                      className="px-3 py-1 hover:bg-gray-100"
+                    >
+                      -
+                    </button>
+                    <span className="px-3 py-1 text-sm font-bold">
+                      {item.quantity}
+                    </span>
+                    <button
+                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                      className="px-3 py-1 hover:bg-gray-100"
+                    >
+                      +
+                    </button>
+                  </div>
+                  <button
+                    onClick={() => removeFromCart(item.id)}
+                    className="text-xs text-red-500 font-bold uppercase hover:underline"
+                  >
+                    Xóa
+                  </button>
+                </div>
               </div>
-            ))}
-          </div>
-          <div className="mt-4 text-right text-xl font-bold">
-            Tổng tiền:{" "}
-            <span className="text-red-600">
-              {totalPrice.toLocaleString("vi-VN")} đ
-            </span>
-          </div>
+            </div>
+          ))}
         </div>
 
-        {/* CỘT PHẢI: FORM THANH TOÁN */}
-        <div className="bg-gray-50 p-6 rounded-lg border h-fit sticky top-24">
-          <h2 className="text-2xl font-bold mb-4">2. Thông tin giao hàng</h2>
-
-          {/* Hiện tên user đang đăng nhập cho chuyên nghiệp */}
-          {user && (
-            <div className="mb-4 text-sm text-blue-600 bg-blue-50 p-2 rounded">
-              Đang đặt hàng với tài khoản: <strong>{user.username}</strong>
-            </div>
-          )}
-
-          <div className="space-y-4">
+        {/* --- CỘT PHẢI: FORM THANH TOÁN --- */}
+        <div className="bg-gray-50 p-8 h-fit">
+          <h2 className="text-xl font-bold uppercase mb-6 border-b pb-2">
+            Thông tin giao hàng
+          </h2>
+          <form onSubmit={handleCheckout} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium mb-1">
-                Họ tên người nhận
+              <label className="block text-xs font-bold uppercase mb-1">
+                Họ và tên
               </label>
               <input
-                name="name"
-                className="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 outline-none"
-                placeholder="Ví dụ: Nguyễn Văn A"
-                onChange={handleChange}
+                required
+                type="text"
+                className="w-full p-3 border border-gray-300 focus:outline-none focus:border-black text-sm"
+                placeholder="Nhập họ tên..."
+                value={customerInfo.customerName}
+                onChange={(e) =>
+                  setCustomerInfo({
+                    ...customerInfo,
+                    customerName: e.target.value,
+                  })
+                }
               />
             </div>
-
             <div>
-              <label className="block text-sm font-medium mb-1">
+              <label className="block text-xs font-bold uppercase mb-1">
                 Số điện thoại
               </label>
               <input
-                name="phone"
-                className="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 outline-none"
-                placeholder="Ví dụ: 0987..."
-                onChange={handleChange}
+                required
+                type="tel"
+                className="w-full p-3 border border-gray-300 focus:outline-none focus:border-black text-sm"
+                placeholder="Nhập số điện thoại..."
+                value={customerInfo.phone}
+                onChange={(e) =>
+                  setCustomerInfo({ ...customerInfo, phone: e.target.value })
+                }
               />
             </div>
-
             <div>
-              <label className="block text-sm font-medium mb-1">
+              <label className="block text-xs font-bold uppercase mb-1">
                 Địa chỉ nhận hàng
               </label>
               <textarea
-                name="address"
-                className="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 outline-none h-24"
-                placeholder="Ví dụ: Số 10, Đường Z, Hà Nội..."
-                onChange={handleChange}
-              />
+                required
+                rows={3}
+                className="w-full p-3 border border-gray-300 focus:outline-none focus:border-black text-sm"
+                placeholder="Số nhà, đường, phường/xã..."
+                value={customerInfo.address}
+                onChange={(e) =>
+                  setCustomerInfo({ ...customerInfo, address: e.target.value })
+                }
+              ></textarea>
             </div>
 
-            <div className="pt-4">
+            <div className="border-t pt-4 mt-6">
+              <div className="flex justify-between text-lg font-black uppercase mb-6">
+                <span>Tổng cộng:</span>
+                <span>
+                  {new Intl.NumberFormat("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  }).format(totalPrice)}
+                </span>
+              </div>
               <button
-                onClick={handleOrder}
-                className="w-full bg-black text-white py-3 rounded-lg font-bold text-lg hover:bg-gray-800 transition transform active:scale-95"
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full bg-black text-white py-4 font-bold uppercase tracking-widest hover:bg-gray-800 transition disabled:opacity-70 disabled:cursor-not-allowed"
               >
-                🚀 XÁC NHẬN ĐẶT HÀNG
+                {isSubmitting ? "Đang xử lý..." : "Đặt hàng ngay"}
               </button>
-              <p className="text-center text-xs text-gray-500 mt-2">
-                Thanh toán tiền mặt khi nhận hàng (COD)
+              <p className="text-center text-xs text-gray-500 mt-4">
+                Thanh toán khi nhận hàng (COD). Miễn phí vận chuyển.
               </p>
             </div>
-          </div>
+          </form>
         </div>
       </div>
     </div>

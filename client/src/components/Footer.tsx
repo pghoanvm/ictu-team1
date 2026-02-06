@@ -1,94 +1,91 @@
-export default function Footer() {
+// client/src/components/Footer.tsx
+import { Link } from "react-router-dom";
+
+const Footer = () => {
   return (
-    <footer className="bg-white border-t mt-20 pt-10 pb-6 text-gray-600 text-sm">
-      <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
-        {/* CỘT 1: THÔNG TIN CÔNG TY */}
+    <footer className="bg-black text-white pt-16 pb-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-12">
+        {/* Cột 1: Brand */}
         <div>
-          <h3 className="font-bold text-black uppercase mb-4 text-base tracking-wider">
-            Về chúng tôi
+          <h3 className="text-2xl font-black uppercase mb-6 tracking-tighter">
+            TEAM.
           </h3>
-          <p className="mb-2">Team 1 - Web demo</p>
-          <p className="mb-2">📍 Địa chỉ: xxx xxx xxx</p>
-          <p>📞 Hotline: 09xx.xxx.xxx</p>
+          <p className="text-gray-400 text-sm leading-relaxed">
+            Chúng tôi tạo ra những trang phục nam giới chất lượng cao, bền vững
+            và phong cách.
+          </p>
         </div>
 
-        {/* CỘT 2: CHÍNH SÁCH */}
+        {/* Cột 2: Links */}
         <div>
-          <h3 className="font-bold text-black uppercase mb-4 text-base tracking-wider">
-            Chính sách khách hàng
-          </h3>
-          <ul className="space-y-2">
+          <h4 className="font-bold uppercase mb-6 tracking-wider">Cửa hàng</h4>
+          <ul className="space-y-4 text-sm text-gray-400">
             <li>
-              <a href="#" className="hover:text-black">
+              <Link to="/shop" className="hover:text-white transition">
+                Tất cả sản phẩm
+              </Link>
+            </li>
+            <li>
+              <Link to="/collection" className="hover:text-white transition">
+                Bộ sưu tập mới
+              </Link>
+            </li>
+            <li>
+              <Link to="/about" className="hover:text-white transition">
+                Về chúng tôi
+              </Link>
+            </li>
+          </ul>
+        </div>
+
+        {/* Cột 3: Hỗ trợ */}
+        <div>
+          <h4 className="font-bold uppercase mb-6 tracking-wider">Hỗ trợ</h4>
+          <ul className="space-y-4 text-sm text-gray-400">
+            <li>
+              <a href="#" className="hover:text-white transition">
                 Chính sách đổi trả
               </a>
             </li>
             <li>
-              <a href="#" className="hover:text-black">
-                Chính sách bảo hành
-              </a>
-            </li>
-            <li>
-              <a href="#" className="hover:text-black">
-                Khách hàng thân thiết
-              </a>
-            </li>
-            <li>
-              <a href="#" className="hover:text-black">
+              <a href="#" className="hover:text-white transition">
                 Hướng dẫn chọn size
               </a>
             </li>
-          </ul>
-        </div>
-
-        {/* CỘT 3: HỖ TRỢ */}
-        <div>
-          <h3 className="font-bold text-black uppercase mb-4 text-base tracking-wider">
-            Hỗ trợ
-          </h3>
-          <ul className="space-y-2">
             <li>
-              <a href="#" className="hover:text-black">
-                Phương thức thanh toán
-              </a>
-            </li>
-            <li>
-              <a href="#" className="hover:text-black">
-                Vận chuyển & Giao nhận
-              </a>
-            </li>
-            <li>
-              <a href="#" className="hover:text-black">
-                Câu hỏi thường gặp
+              <a href="#" className="hover:text-white transition">
+                Liên hệ
               </a>
             </li>
           </ul>
         </div>
 
-        {/* CỘT 4: ĐĂNG KÝ NHẬN TIN */}
+        {/* Cột 4: Newsletter */}
         <div>
-          <h3 className="font-bold text-black uppercase mb-4 text-base tracking-wider">
+          <h4 className="font-bold uppercase mb-6 tracking-wider">
             Đăng ký nhận tin
-          </h3>
-          <p className="mb-4 text-xs">
-            Nhận thông tin sản phẩm mới và khuyến mãi sớm nhất.
+          </h4>
+          <p className="text-gray-400 text-sm mb-4">
+            Nhận thông báo về sale và sản phẩm mới.
           </p>
           <div className="flex">
             <input
               type="email"
-              placeholder="Email của bạn..."
-              className="border p-2 w-full outline-none focus:border-black text-xs"
+              placeholder="Email của bạn"
+              className="bg-gray-900 border-none text-white px-4 py-2 w-full focus:ring-1 focus:ring-white"
             />
-            <button className="bg-black text-white px-4 text-xs font-bold uppercase hover:bg-gray-800">
+            <button className="bg-white text-black px-4 font-bold uppercase hover:bg-gray-200">
               Gửi
             </button>
           </div>
         </div>
       </div>
 
-      <div className="text-center mt-10 border-t pt-6 text-xs text-gray-400">
-        © 2026 Team 1. All rights reserved. Design by WebVTile.
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 pt-8 border-t border-gray-800 text-center text-gray-500 text-xs">
+        &copy; 2026 TEAM Fashion. All rights reserved.
       </div>
     </footer>
   );
-}
+};
+
+export default Footer;

@@ -20,6 +20,8 @@ public class Order {
     // Lưu danh sách món hàng (lưu đơn giản dưới dạng List Map)
     private List<Map<String, Object>> items;
 
+    private String orderDate;
+
     // Constructor
     public Order() {
         this.status = "PENDING"; // Mặc định là Đang chờ xử lý
@@ -88,5 +90,13 @@ public class Order {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getOrderDate() {
+        return orderDate;
+    }
+
+    public void setOrderDate(String orderDate) {
+        this.orderDate = orderDate;
     }
 }

@@ -2,10 +2,18 @@ package com.clothingstore.server.controller;
 
 import com.clothingstore.server.entity.Product;
 import com.clothingstore.server.repository.ProductRepository;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+// 👇 BỔ SUNG 2 DÒNG NÀY ĐỂ HẾT LỖI MAP/HASHMAP
+import java.util.HashMap;
+import java.util.Map;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,23 +26,42 @@ public class ProductController {
     private ProductRepository productRepository;
 
     @GetMapping
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
+    public ResponseEntity<?> getAllProducts(
+            @RequestParam(defaultValue = "") String search,
+            @RequestParam(defaultValue = "") String category,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "8") int limit,
+            @RequestParam(defaultValue = "desc") String sort) {
+        Sort.Direction direction = sort.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(page, limit, Sort.by(direction, "id"));
+
+        Page<Product> productPage;
+        if (!search.isEmpty()) {
+            productPage = productRepository.findByNameContainingIgnoreCase(search, pageable);
+        } else if (!category.isEmpty()) {
+            // Gọi hàm repository mới thêm
+            productPage = productRepository.findByCategoryContainingIgnoreCase(category, pageable);
+        } else {
+            productPage = productRepository.findAll(pageable);
+        }
+        if (search.isEmpty()) {
+            productPage = productRepository.findAll(pageable);
+        } else {
+            // Lưu ý: Phải sửa ProductRepository mới chạy được dòng dưới
+            productPage = productRepository.findByNameContainingIgnoreCase(search, pageable);
+        }
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("products", productPage.getContent());
+        response.put("currentPage", productPage.getNumber());
+        response.put("totalItems", productPage.getTotalElements());
+        response.put("totalPages", productPage.getTotalPages());
+
+        return ResponseEntity.ok(response);
     }
 
-    // @GetMapping("/init")
-    // public Product createDummy() {
-    // Product p = new Product();
-    // p.setName("Áo Thun Basic");
-    // p.setPrice(150000.0);
-    // p.setDescription("Áo thun cotton thoáng mát");
-    // p.setImageUrl(
-    // "https://th.bing.com/th/id/R.2fc5cd3d6e303d346f7142af5ae01841?rik=%2bkfMBowDmQq%2bbg&pid=ImgRaw&r=0");
-    // return productRepository.save(p);
-    // }
     @GetMapping("/newest")
     public List<Product> getNewestProducts() {
-        // Sắp xếp theo ID giảm dần (cái nào tạo sau ID sẽ lớn hơn) và lấy 10 cái đầu
         return productRepository.findAll(Sort.by(Sort.Direction.DESC, "id"))
                 .stream()
                 .limit(10)
@@ -49,14 +76,11 @@ public class ProductController {
     @PutMapping("/{id}")
     public Product updateProduct(@PathVariable String id, @RequestBody Product productDetails) {
         Product product = productRepository.findById(id).orElseThrow();
-
-        // Cập nhật thông tin mới
         product.setName(productDetails.getName());
         product.setPrice(productDetails.getPrice());
         product.setDescription(productDetails.getDescription());
         product.setImageUrl(productDetails.getImageUrl());
         product.setCategory(productDetails.getCategory());
-
         return productRepository.save(product);
     }
 
