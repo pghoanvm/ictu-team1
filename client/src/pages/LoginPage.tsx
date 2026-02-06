@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
+import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import type { CredentialResponse } from "@react-oauth/google";
 import axios, { AxiosError } from "axios";
 import { useAuth } from "../context/AuthContext";
@@ -18,7 +18,7 @@ export default function LoginPage() {
         {
           username,
           password,
-        }
+        },
       );
       login(res.data); // Lưu user vào context
       alert("Đăng nhập thành công!");
@@ -31,17 +31,24 @@ export default function LoginPage() {
       alert("Lỗi: " + (error.response?.data?.message || "Sai thông tin!"));
     }
   };
-const handleGoogleSuccess = async (credentialResponse: CredentialResponse) => { 
-  try {
-     const res = await axios.post("http://localhost:8080/api/auth/google", { 
-      token: credentialResponse.credential }); 
-      login(res.data); // lưu JWT và role 
-      alert("Đăng nhập Google thành công!"); 
-       navigate("/");
+  const handleGoogleSuccess = async (
+    credentialResponse: CredentialResponse,
+  ) => {
+    try {
+      const res = await axios.post(
+        "https://webvtile.onrender.com/api/auth/google",
+        {
+          token: credentialResponse.credential,
+        },
+      );
+      login(res.data); // lưu JWT và role
+      alert("Đăng nhập Google thành công!");
+      navigate("/");
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
-       alert("Google login thất bại!"); 
-      }
-     };
+      alert("Google login thất bại!");
+    }
+  };
   return (
     <div className="container mx-auto p-4">
       <div className="max-w-md mx-auto mt-20 p-6 border rounded shadow-lg bg-white">
@@ -64,8 +71,7 @@ const handleGoogleSuccess = async (credentialResponse: CredentialResponse) => {
         >
           Đăng Nhập
         </button>
-        
-       
+
         <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
           <GoogleLogin
             onSuccess={handleGoogleSuccess}
@@ -73,13 +79,11 @@ const handleGoogleSuccess = async (credentialResponse: CredentialResponse) => {
           />
         </GoogleOAuthProvider>
 
-
         <div className="flex justify-between text-sm text-blue-500">
           <Link to="/register">Đăng ký tài khoản</Link>
           <Link to="/forgot-password">Quên mật khẩu?</Link>
         </div>
       </div>
-      
     </div>
   );
 }
